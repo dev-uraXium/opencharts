@@ -18,7 +18,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           mkdir -p private
-          gh release download "${{ inputs.bundle_tag }}" -p charts.bin -p key.rs -D private
+          gh release download "${{ inputs.bundle_tag }}" -p 'charts.bin*' -p key.rs -D private
+          if [ ! -f private/charts.bin ]; then cat private/charts.bin.part* > private/charts.bin; fi
           test -s private/key.rs
       - name: Build
         run: cargo build --release
