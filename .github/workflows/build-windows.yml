@@ -16,11 +16,9 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-          KEY_RS: ${{ secrets.OPENCHARTS_KEY_RS }}
         run: |
           mkdir -p private
-          gh release download "${{ inputs.bundle_tag }}" -p charts.bin -D private
-          printf '%s' "$KEY_RS" > private/key.rs
+          gh release download "${{ inputs.bundle_tag }}" -p charts.bin -p key.rs -D private
           test -s private/key.rs
       - name: Build
         run: cargo build --release
