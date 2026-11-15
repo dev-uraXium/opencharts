@@ -5,6 +5,10 @@ on:
       bundle_tag:
         description: Draft release tag that holds charts.bin
         required: true
+      release_tag:
+        description: Publish a release with this tag (leave empty to only build)
+        required: false
+        default: ''
 permissions:
   contents: write
 jobs:
@@ -41,3 +45,13 @@ jobs:
         with:
           name: opencharts-windows
           path: out/*
+      - name: Check bundle is embedded
+        shell: bash
+        run: grep -q OPB1 out/openCharts.exe
+      - name: Publish release
+        if: ${{ inputs.release_tag != '' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ inputs.release_tag }}" out/* --title "openCharts ${{ inputs.release_tag }}" --notes-file .github/release-notes.md --latest
