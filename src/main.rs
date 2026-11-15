@@ -770,9 +770,15 @@ impl App {
                     };
                     ui.label(RichText::new(txt).weak());
                 });
-                if ui.link("Releases on GitHub").clicked() {
-                    update::open_url(update::RELEASES_URL);
-                }
+                ui.horizontal(|ui| {
+                    if ui.link("Releases on GitHub").clicked() {
+                        update::open_url(update::RELEASES_URL);
+                    }
+                    ui.label("·");
+                    if ui.link("Discord").clicked() {
+                        update::open_url("https://discord.gg/8SpHYeVhN9");
+                    }
+                });
                 ui.add_space(8.0);
                 ui.label(RichText::new("© 2026 uraXium. All rights reserved.").strong());
                 ui.label(

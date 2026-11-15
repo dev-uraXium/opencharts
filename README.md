@@ -2,7 +2,7 @@
 
 <h1 align="center">openCharts</h1>
 
-<p align="center"><em>A <a href="https://github.com/dev-uraXium">Coral Reef Studios</a> product · formerly OpenPlates</em></p>
+<p align="center"><em>A <a href="https://github.com/dev-uraXium">Coral Reef Studios</a> product · formerly OpenPlates · <a href="https://discord.gg/8SpHYeVhN9">Discord</a></em></p>
 
 **Real-world-style aviation charts for [Project Flight](https://www.roblox.com/) (Roblox), in a fast desktop app.**
 
@@ -121,7 +121,7 @@ docs/           landing page (GitHub Pages) and screenshots
 ## Contributing
 
 Bug reports and pull requests for the app are welcome. Open an issue first for anything big.
-Wrong chart? Open an issue with the airport, chart name and what's off (a screenshot helps).
+Wrong chart? Open an issue with the airport, chart name and what's off (a screenshot helps), or tell us on [Discord](https://discord.gg/8SpHYeVhN9).
 
 ## License
 
