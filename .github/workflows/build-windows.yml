@@ -1,0 +1,42 @@
+name: Build Windows release
+on:
+  workflow_dispatch:
+    inputs:
+      bundle_tag:
+        description: Draft release tag that holds charts.bin
+        required: true
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch private chart bundle
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          KEY_RS: ${{ secrets.OPENCHARTS_KEY_RS }}
+        run: |
+          mkdir -p private
+          gh release download "${{ inputs.bundle_tag }}" -p charts.bin -D private
+          printf '%s' "$KEY_RS" > private/key.rs
+          test -s private/key.rs
+      - name: Build
+        run: cargo build --release
+      - name: Installer
+        shell: bash
+        run: |
+          VER=$(grep -m1 '^version' Cargo.toml | cut -d'"' -f2)
+          mkdir -p target/x86_64-pc-windows-gnu/release
+          cp target/release/opencharts.exe target/x86_64-pc-windows-gnu/release/openCharts.exe
+          makensis -DVERSION=$VER installer/opencharts.nsi
+          mkdir out
+          cp target/release/opencharts.exe out/openCharts.exe
+          cp target/openCharts-Setup.exe out/
+          cp out/openCharts.exe out/OpenPlates.exe
+          cp out/openCharts-Setup.exe out/OpenPlates-Setup.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: opencharts-windows
+          path: out/*
