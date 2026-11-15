@@ -1,8 +1,8 @@
 1 ICON "openplates.ico"
 
 1 VERSIONINFO
-FILEVERSION 1,2,0,0
-PRODUCTVERSION 1,2,0,0
+FILEVERSION 1,2,1,0
+PRODUCTVERSION 1,2,1,0
 FILEOS 0x40004
 FILETYPE 0x1
 BEGIN
@@ -12,12 +12,12 @@ BEGIN
     BEGIN
       VALUE "CompanyName", "uraXium"
       VALUE "FileDescription", "OpenPlates - charts for Project Flight"
-      VALUE "FileVersion", "1.2.0"
+      VALUE "FileVersion", "1.2.1"
       VALUE "InternalName", "OpenPlates"
       VALUE "LegalCopyright", "Copyright (C) 2026 uraXium"
       VALUE "OriginalFilename", "OpenPlates.exe"
       VALUE "ProductName", "OpenPlates"
-      VALUE "ProductVersion", "1.2.0"
+      VALUE "ProductVersion", "1.2.1"
     END
   END
   BLOCK "VarFileInfo"

@@ -118,6 +118,6 @@ Wrong chart? Open an issue with the airport, chart name and what's off (a screen
 - **Name:** "OpenPlates" may not be used for modified versions without permission.
 - **Charts** (the chart bundle shipped in the official release, and images exported from it): © 2026 uraXium, all rights reserved. You may use them and share unmodified exports; modifying or redistributing them requires prior permission from uraXium.
 - **Fonts:** Liberation Sans, [SIL Open Font License 1.1](assets/OFL.txt).
-- **Data credits:** waypoints from PFTracker; some ground layouts © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors (ODbL 1.0).
+- **Data credits:** waypoints from PFTracker; some ground layouts © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors (ODbL 1.0); some taxiway designators from the X-Plane Scenery Gateway. Aerodrome pavement is traced from the Project Flight map.
 
 Project Flight and Roblox are trademarks of their respective owners. OpenPlates is a fan project and is not endorsed by them.
