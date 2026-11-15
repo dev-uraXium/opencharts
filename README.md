@@ -15,10 +15,13 @@ Area charts, aerodrome charts, SIDs and STARs for every Project Flight airport, 
 ## Download
 
 1. Go to **[Releases](https://github.com/dev-uraXium/openplates/releases/latest)**.
-2. Download `OpenPlates.exe`.
-3. Double-click it. Nothing to install.
+2. Download **`OpenPlates-Setup.exe`** (recommended) and run it. No admin rights needed.
+   It adds OpenPlates to the Start menu and desktop, and you can uninstall it from *Settings → Apps*.
+   Prefer no install? Download `OpenPlates.exe` instead and just double-click it.
 
 Windows may show a blue *"Windows protected your PC"* box the first time, because the app isn't code-signed. Click **More info → Run anyway**.
+
+**Updates:** OpenPlates (1.4.0 and later) checks GitHub when it starts. When a new version is out, a banner appears: click **Update now** and it downloads, installs and restarts by itself. You can also use **About → Check for updates**. Versions before 1.4.0 can't update themselves: download the latest release once and you're set.
 
 Requirements: Windows 10 or 11 (64-bit) with OpenGL 2.0+ (any GPU from the last ~12 years).
 
@@ -81,6 +84,10 @@ cargo build --release
 # Windows .exe from Linux (needs mingw-w64 and the x86_64-pc-windows-gnu target)
 rustup target add x86_64-pc-windows-gnu
 cargo build --release --target x86_64-pc-windows-gnu
+
+# Windows installer (needs NSIS / makensis)
+cp target/x86_64-pc-windows-gnu/release/openplates.exe target/x86_64-pc-windows-gnu/release/OpenPlates.exe
+makensis -DVERSION=1.4.0 installer/openplates.nsi   # -> target/OpenPlates-Setup.exe
 ```
 
 ### About the chart bundle
@@ -101,6 +108,8 @@ Each chart is zlib-compressed and ChaCha20-encrypted with its own nonce, and is 
 src/main.rs     UI: sidebar, tabs, procedure chips, chart viewer, info page, about box
 src/render.rs   background thread: decrypt → parse SVG → rasterise; PNG export
 src/bundle.rs   reads the encrypted bundle compiled into the binary
+src/update.rs   checks GitHub for new releases and installs them
+installer/      NSIS script for OpenPlates-Setup.exe
 build.rs        copies private/ into the build, or a placeholder if it's missing
 pack.py         builds private/charts.bin + private/key.rs from export/
 assets/         Liberation Sans fonts (SIL OFL 1.1)

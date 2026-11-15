@@ -4,6 +4,7 @@
 
 mod bundle;
 mod render;
+mod update;
 
 use std::collections::BTreeMap;
 use std::sync::Arc;
@@ -46,6 +47,21 @@ struct App {
     status: String,
     about: bool,
     logo: egui::TextureHandle,
+    upd_rx: Option<std::sync::mpsc::Receiver<update::Msg>>,
+    upd: UpdState,
+    upd_manual: bool,
+}
+
+#[derive(Clone)]
+enum UpdState {
+    Idle,
+    Checking,
+    UpToDate,
+    Available(update::Release),
+    Downloading(update::Release, f32),
+    Done,
+    Error(String),
+    Dismissed,
 }
 
 trait TapSort {
@@ -107,7 +123,12 @@ impl App {
             status: String::new(),
             about: false,
             logo,
+            upd_rx: None,
+            upd: UpdState::Checking,
+            upd_manual: false,
         };
+        update::cleanup();
+        a.upd_rx = Some(update::check(cc.egui_ctx.clone()));
         a.open_chart("area-world".into());
         a
     }
@@ -218,6 +239,74 @@ impl App {
             self.status = "Exporting…".into();
             self.renderer.send(Job::Export { id, scale: 3.0, path });
         }
+    }
+
+    fn poll_update(&mut self, ctx: &egui::Context) {
+        let Some(rx) = &self.upd_rx else { return };
+        while let Ok(m) = rx.try_recv() {
+            self.upd = match (m, &self.upd) {
+                (update::Msg::Available(r), _) => UpdState::Available(r),
+                (update::Msg::UpToDate, _) => UpdState::UpToDate,
+                (update::Msg::Progress(p), UpdState::Downloading(r, _)) => UpdState::Downloading(r.clone(), p),
+                (update::Msg::Progress(_), s) => s.clone(),
+                (update::Msg::Installed, _) => UpdState::Done,
+                (update::Msg::Failed(e), _) => UpdState::Error(e),
+            };
+        }
+        if matches!(self.upd, UpdState::Done) {
+            ctx.send_viewport_cmd(egui::ViewportCommand::Close);
+        }
+    }
+
+    fn update_banner(&mut self, ui: &mut egui::Ui) {
+        let show = match &self.upd {
+            UpdState::Available(_) | UpdState::Downloading(..) => true,
+            UpdState::Error(_) => self.upd_manual,
+            _ => false,
+        };
+        if !show {
+            return;
+        }
+        egui::Frame::NONE
+            .fill(Color32::from_rgb(0x1b, 0x4f, 0x8a))
+            .inner_margin(egui::Margin::symmetric(12, 8))
+            .show(ui, |ui| {
+                ui.horizontal(|ui| match self.upd.clone() {
+                    UpdState::Available(r) => {
+                        ui.label(RichText::new(format!("OpenPlates {} is available", r.version)).strong().color(Color32::WHITE));
+                        ui.label(RichText::new(format!("(you have {})", env!("CARGO_PKG_VERSION"))).color(Color32::from_gray(200)));
+                        ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                            if ui.button("Later").clicked() {
+                                self.upd = UpdState::Dismissed;
+                            }
+                            if ui.button("What's new").clicked() {
+                                update::open_url(&r.page);
+                            }
+                            if ui.button(RichText::new("Update now").strong()).clicked() {
+                                self.upd = UpdState::Downloading(r.clone(), 0.0);
+                                self.upd_rx = Some(update::install(r, ui.ctx().clone()));
+                            }
+                        });
+                    }
+                    UpdState::Downloading(r, p) => {
+                        ui.label(RichText::new(format!("Downloading OpenPlates {}…", r.version)).strong().color(Color32::WHITE));
+                        ui.add(egui::ProgressBar::new(p).desired_width(260.0).show_percentage());
+                        ui.label(RichText::new("The app restarts when it's done").color(Color32::from_gray(200)));
+                    }
+                    UpdState::Error(e) => {
+                        ui.label(RichText::new(format!("Update failed: {e}")).color(Color32::WHITE));
+                        ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                            if ui.button("Close").clicked() {
+                                self.upd = UpdState::Dismissed;
+                            }
+                            if ui.button("Download from GitHub").clicked() {
+                                update::open_url(update::RELEASES_URL);
+                            }
+                        });
+                    }
+                    _ => {}
+                });
+            });
     }
 
     // ───────────────────────────── sidebar ─────────────────────────────
@@ -662,6 +751,26 @@ impl App {
                         ui.label(format!("Version {}  ·  Charts for Project Flight", env!("CARGO_PKG_VERSION")));
                     });
                 });
+                ui.add_space(6.0);
+                ui.horizontal(|ui| {
+                    let busy = matches!(self.upd, UpdState::Checking | UpdState::Downloading(..));
+                    if ui.add_enabled(!busy, egui::Button::new("Check for updates")).clicked() {
+                        self.upd_manual = true;
+                        self.upd = UpdState::Checking;
+                        self.upd_rx = Some(update::check(ui.ctx().clone()));
+                    }
+                    let txt = match &self.upd {
+                        UpdState::Checking => "Checking…".to_string(),
+                        UpdState::UpToDate => "You have the latest version.".to_string(),
+                        UpdState::Available(r) | UpdState::Downloading(r, _) => format!("Version {} is available", r.version),
+                        UpdState::Error(_) => "Couldn't reach GitHub.".to_string(),
+                        _ => String::new(),
+                    };
+                    ui.label(RichText::new(txt).weak());
+                });
+                if ui.link("Releases on GitHub").clicked() {
+                    update::open_url(update::RELEASES_URL);
+                }
                 ui.add_space(8.0);
                 ui.label(RichText::new("© 2026 uraXium. All rights reserved.").strong());
                 ui.label(
@@ -686,6 +795,10 @@ impl eframe::App for App {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
         let ctx = ui.ctx().clone();
         self.poll(&ctx);
+        self.poll_update(&ctx);
+        if matches!(self.upd, UpdState::Available(_) | UpdState::Downloading(..)) || (self.upd_manual && matches!(self.upd, UpdState::Error(_))) {
+            egui::Panel::top("update").frame(egui::Frame::NONE).show(ui, |ui| self.update_banner(ui));
+        }
 
         egui::Panel::left("side")
             .resizable(true)
