@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b4f8a"/>
+      <stop offset="1" stop-color="#0d2747"/>
+    </linearGradient>
+    <clipPath id="sq"><rect x="8" y="8" width="240" height="240" rx="54"/></clipPath>
+  </defs>
+  <rect x="8" y="8" width="240" height="240" rx="54" fill="url(#bg)"/>
+  <g clip-path="url(#sq)">
+    <!-- compass ring -->
+    <circle cx="128" cy="134" r="78" fill="none" stroke="#ffffff" stroke-opacity="0.22" stroke-width="3"/>
+    <g stroke="#ffffff" stroke-opacity="0.35" stroke-width="3">
+      <line x1="128" y1="56" x2="128" y2="68"/><line x1="128" y1="200" x2="128" y2="212"/>
+      <line x1="50" y1="134" x2="62" y2="134"/><line x1="194" y1="134" x2="206" y2="134"/>
+    </g>
+    <!-- runway -->
+    <g transform="rotate(35 128 134)">
+      <rect x="112" y="64" width="32" height="140" rx="3" fill="#ffffff"/>
+      <g fill="#0d2747">
+        <rect x="126" y="80" width="4" height="14"/><rect x="126" y="102" width="4" height="14"/>
+        <rect x="126" y="124" width="4" height="14"/><rect x="126" y="146" width="4" height="14"/>
+        <rect x="126" y="168" width="4" height="14"/>
+        <rect x="116" y="190" width="3" height="10"/><rect x="121" y="190" width="3" height="10"/>
+        <rect x="132" y="190" width="3" height="10"/><rect x="137" y="190" width="3" height="10"/>
+      </g>
+    </g>
+    <!-- departure track: straight out, then a turn to the right -->
+    <path d="M178 62 L188 48 Q198 34 214 34" fill="none" stroke="#ffc83d" stroke-width="8" stroke-linecap="round" stroke-dasharray="0.1 14"/>
+    <path d="M206 22 L222 34 L206 46" fill="none" stroke="#ffc83d" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

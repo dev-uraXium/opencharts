@@ -45,6 +45,7 @@ struct App {
     pan: Vec2,
     status: String,
     about: bool,
+    logo: egui::TextureHandle,
 }
 
 trait TapSort {
@@ -57,11 +58,35 @@ impl TapSort for Vec<ChartRef> {
     }
 }
 
+static LOGO_SVG: &[u8] = include_bytes!("../assets/logo.svg");
+
+/// Renders the OpenPlates logo to straight RGBA at `size`×`size`.
+fn logo_rgba(size: u32) -> Vec<u8> {
+    use resvg::{tiny_skia, usvg};
+    let tree = usvg::Tree::from_data(LOGO_SVG, &usvg::Options::default()).expect("logo");
+    let mut pm = tiny_skia::Pixmap::new(size, size).expect("pixmap");
+    let s = size as f32 / tree.size().width();
+    resvg::render(&tree, tiny_skia::Transform::from_scale(s, s), &mut pm.as_mut());
+    // tiny-skia is premultiplied; egui/winit want straight alpha
+    pm.pixels()
+        .iter()
+        .flat_map(|p| {
+            let c = p.demultiply();
+            [c.red(), c.green(), c.blue(), c.alpha()]
+        })
+        .collect()
+}
+
 const STEPS: [f32; 6] = [0.75, 1.0, 1.5, 2.0, 3.0, 4.0];
 
 impl App {
     fn new(cc: &eframe::CreationContext, bundle: Arc<Bundle>) -> Self {
         let renderer = Renderer::new(bundle.clone(), cc.egui_ctx.clone());
+        let logo = cc.egui_ctx.load_texture(
+            "logo",
+            egui::ColorImage::from_rgba_unmultiplied([128, 128], &logo_rgba(128)),
+            egui::TextureOptions::LINEAR,
+        );
         let mut style = (*cc.egui_ctx.global_style()).clone();
         style.visuals.selection.bg_fill = ACCENT;
         style.spacing.item_spacing = egui::vec2(6.0, 5.0);
@@ -81,6 +106,7 @@ impl App {
             pan: Vec2::ZERO,
             status: String::new(),
             about: false,
+            logo,
         };
         a.open_chart("area-world".into());
         a
@@ -198,8 +224,12 @@ impl App {
     fn sidebar(&mut self, ui: &mut egui::Ui) {
         ui.add_space(6.0);
         ui.horizontal(|ui| {
-            ui.label(RichText::new("OpenPlates").size(20.0).strong());
-            ui.label(RichText::new("PC").size(12.0).color(ACCENT).strong());
+            ui.add(egui::Image::new(&self.logo).fit_to_exact_size(Vec2::splat(30.0)));
+            ui.vertical(|ui| {
+                ui.spacing_mut().item_spacing.y = 0.0;
+                ui.label(RichText::new("OpenPlates").size(19.0).strong());
+                ui.label(RichText::new("for Project Flight").size(10.5).color(ACCENT));
+            });
         });
         ui.label(
             RichText::new(format!("Project Flight charts · AIRAC {}", self.bundle.meta.airac))
@@ -625,8 +655,13 @@ impl App {
             .default_width(420.0)
             .anchor(egui::Align2::CENTER_CENTER, Vec2::ZERO)
             .show(ctx, |ui| {
-                ui.label(RichText::new("OpenPlates for PC").size(18.0).strong());
-                ui.label(format!("Version {}", env!("CARGO_PKG_VERSION")));
+                ui.horizontal(|ui| {
+                    ui.add(egui::Image::new(&self.logo).fit_to_exact_size(Vec2::splat(56.0)));
+                    ui.vertical(|ui| {
+                        ui.label(RichText::new("OpenPlates").size(20.0).strong());
+                        ui.label(format!("Version {}  ·  Charts for Project Flight", env!("CARGO_PKG_VERSION")));
+                    });
+                });
                 ui.add_space(8.0);
                 ui.label(RichText::new("© 2026 uraXium. All rights reserved.").strong());
                 ui.label(
@@ -701,7 +736,9 @@ fn main() -> eframe::Result {
     };
     let opts = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
-            .with_title("OpenPlates — Project Flight charts")
+            .with_title("OpenPlates")
+            .with_app_id("openplates")
+            .with_icon(Arc::new(egui::IconData { rgba: logo_rgba(256), width: 256, height: 256 }))
             .with_inner_size([1360.0, 860.0])
             .with_min_inner_size([820.0, 560.0]),
         ..Default::default()

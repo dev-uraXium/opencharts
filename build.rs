@@ -8,6 +8,13 @@
 use std::{env, fs, path::PathBuf};
 
 fn main() {
+    // Windows: embed the app icon and version info into the .exe
+    println!("cargo:rerun-if-changed=assets/app.rc");
+    println!("cargo:rerun-if-changed=assets/openplates.ico");
+    if env::var("CARGO_CFG_TARGET_OS").as_deref() == Ok("windows") {
+        embed_resource::compile("assets/app.rc", embed_resource::NONE).manifest_optional().unwrap();
+    }
+
     let out = PathBuf::from(env::var("OUT_DIR").unwrap());
     let bin = PathBuf::from("private/charts.bin");
     let key = PathBuf::from("private/key.rs");

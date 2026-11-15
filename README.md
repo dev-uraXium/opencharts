@@ -1,4 +1,6 @@
-# OpenPlates
+<p align="center"><img src="docs/img/logo.svg" width="112" alt="OpenPlates logo"></p>
+
+<h1 align="center">OpenPlates</h1>
 
 **Real-world-style aviation charts for [Project Flight](https://www.roblox.com/) (Roblox), in a fast desktop app.**
 
