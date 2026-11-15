@@ -29,7 +29,9 @@ jobs:
           VER=$(grep -m1 '^version' Cargo.toml | cut -d'"' -f2)
           mkdir -p target/x86_64-pc-windows-gnu/release
           cp target/release/opencharts.exe target/x86_64-pc-windows-gnu/release/openCharts.exe
-          makensis -DVERSION=$VER installer/opencharts.nsi
+          MK="/c/Program Files (x86)/NSIS/makensis.exe"
+          if [ ! -x "$MK" ]; then choco install nsis -y --no-progress; fi
+          "$MK" -DVERSION=$VER installer/opencharts.nsi
           mkdir out
           cp target/release/opencharts.exe out/openCharts.exe
           cp target/openCharts-Setup.exe out/
