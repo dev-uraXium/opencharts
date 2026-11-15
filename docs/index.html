@@ -6,7 +6,7 @@
 <title>OpenPlates: real-world-style charts for Project Flight</title>
 <meta name="description" content="Area, ground, SID and STAR charts for every Project Flight airport, drawn like real aviation charts. Free desktop app for Windows.">
 <meta property="og:title" content="OpenPlates">
-<meta property="og:description" content="Real-world-style aviation charts for Project Flight (Roblox). 872 charts, free, offline.">
+<meta property="og:description" content="Real-world-style aviation charts for Project Flight (Roblox). 270 charts, free, offline.">
 <meta property="og:image" content="img/area.png">
 <style>
   :root{
@@ -162,10 +162,10 @@
 <section>
   <div class="wrap">
     <div class="stats">
-      <div><b>872</b><span>charts</span></div>
+      <div><b>270</b><span>charts</span></div>
       <div><b>16</b><span>airports</span></div>
-      <div><b>5</b><span>regions</span></div>
-      <div><b>850</b><span>SID &amp; STAR charts</span></div>
+      <div><b>6</b><span>islands</span></div>
+      <div><b>247</b><span>SID &amp; STAR charts</span></div>
     </div>
   </div>
 </section>
@@ -177,7 +177,7 @@
     <p class="lede">OpenPlates is a chart library for Project Flight pilots and ATC. Every chart is a clean vector drawing in the style of the real thing, so it stays sharp at any zoom and reads the way you'd expect.</p>
     <div class="grid3">
       <div class="feat"><h3><i>AREA</i> Area charts</h3><p>Each region and the whole map, with coastlines, shaded terrain, airports and every PFTracker waypoint.</p></div>
-      <div class="feat"><h3><i>GND</i> Ground charts</h3><p>Runways with idents, headings and dimensions, plus taxiways, aprons and buildings traced from the map.</p></div>
+      <div class="feat"><h3><i>GND</i> Aerodrome charts</h3><p>Runways, taxiways with their real designators, aprons, stands and buildings, fitted to the Project Flight map.</p></div>
       <div class="feat"><h3><i>SID</i> Departures</h3><p>Standard departures per runway, with initial climbs, turns and altitude restrictions, plus an overview chart per runway.</p></div>
       <div class="feat"><h3><i>STAR</i> Arrivals</h3><p>Standard arrivals laid out the same way, so you can brief an arrival in seconds.</p></div>
       <div class="feat"><h3><i>INFO</i> Airport info</h3><p>Elevation, frequencies, a runway table, and every procedure written out as text.</p></div>
@@ -192,9 +192,9 @@
     <h2>A look inside</h2>
     <div class="gallery">
       <figure><img src="img/ground.png" alt="EGKK ground chart" loading="lazy"><figcaption>EGKK · GROUND CHART</figcaption></figure>
-      <figure><img src="img/sid.png" alt="EGKK SIDs runway 26L" loading="lazy"><figcaption>EGKK · SIDS · RWY 26L OVERVIEW</figcaption></figure>
+      <figure><img src="img/sid.png" alt="EGKK NOVMA 1M SID" loading="lazy"><figcaption>EGKK · NOVMA 1M SID</figcaption></figure>
       <figure><img src="img/zoom.png" alt="Zoomed in to 800%" loading="lazy"><figcaption>ZOOMED TO 800% · STILL SHARP</figcaption></figure>
-      <figure><img src="img/info.png" alt="PAFA airport info" loading="lazy"><figcaption>PAFA · AIRPORT INFO</figcaption></figure>
+      <figure><img src="img/info.png" alt="EGKK airport info" loading="lazy"><figcaption>EGKK · AIRPORT INFO</figcaption></figure>
     </div>
   </div>
 </section>
@@ -247,7 +247,7 @@ $ cargo build --release
     <p class="label">FAQ</p>
     <h2>Questions</h2>
     <details><summary>Is this official?</summary><p>No. OpenPlates is a fan project. It isn't affiliated with or endorsed by Project Flight or Roblox.</p></details>
-    <details><summary>Are the SIDs and STARs the real-world ones?</summary><p>No. Real procedures don't fit Project Flight's compressed geography, so they're designed for Project Flight, using real fix names where those fixes exist on the map. They're marked "community procedure" on every chart.</p></details>
+    <details><summary>Are the SIDs and STARs the real-world ones?</summary><p>Yes. They follow the published real-world AIP routeings and restrictions. Only procedures whose fixes exist in Project Flight are included, and only those fixes are charted, so a few airports have fewer procedures than in real life, and small VFR fields have none.</p></details>
     <details><summary>Can I use these for real flying?</summary><p>Absolutely not. They're for simulation in Project Flight only.</p></details>
     <details><summary>Can I share the charts?</summary><p>You can share exported images unchanged. Modifying them or redistributing them as your own needs permission from uraXium.</p></details>
     <details><summary>Mac or Linux?</summary><p>Official builds are Windows-only for now. The app is cross-platform Rust, so macOS and Linux builds may come later.</p></details>

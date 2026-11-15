@@ -2,7 +2,7 @@
 
 **Real-world-style aviation charts for [Project Flight](https://www.roblox.com/) (Roblox), in a fast desktop app.**
 
-Area charts, ground charts, SIDs and STARs for every Project Flight airport, drawn the way real charts look: black-and-white islands and terrain, real runway placement, PFTracker waypoints.
+Area charts, aerodrome charts, SIDs and STARs for every Project Flight airport, drawn in ICAO AIP style: real-world procedures and taxiway names, fitted to the actual Project Flight map.
 
 ![OpenPlates area chart](docs/img/area.png)
 
@@ -24,10 +24,10 @@ Requirements: Windows 10 or 11 (64-bit) with OpenGL 2.0+ (any GPU from the last 
 
 | | |
 |---|---|
-| **5 regions** | Hispaniola, United Kingdom, Fairbanks Island, Madeira, Cyprus, plus a chart of the whole map |
+| **6 islands** | Great Britain, Isle of Wight, Hispaniola, Cyprus, Madeira, Fairbanks Island, plus a chart of the whole map |
 | **16 airports** | Ground chart, SIDs, STARs and an info page for each |
-| **850 SID & STAR charts** | Grouped by runway, with an "All" overview chart per runway |
-| **872 charts** in total | All built into the app, no internet needed |
+| **247 SID & STAR charts** | Real-world AIP procedures, drawn on Project Flight fixes, grouped by runway with an "All" overview |
+| **270 charts** in total | All built into the app, no internet needed · AIRAC 2611 |
 
 ## How to use
 
@@ -43,7 +43,7 @@ Requirements: Windows 10 or 11 (64-bit) with OpenGL 2.0+ (any GPU from the last 
 | **STARs** | Arrivals, same layout as SIDs |
 | **Info** | Elevation, frequencies, runway table (course, length, width) and every procedure's route in text |
 
-![SIDs for EGKK](docs/img/sid.png)
+![EGKK NOVMA 1M SID](docs/img/sid.png)
 
 ### Moving around a chart
 | Action | How |

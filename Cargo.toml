@@ -1,6 +1,6 @@
 [package]
 name = "openplates"
-version = "1.0.0"
+version = "1.1.0"
 edition = "2021"
 description = "OpenPlates - Project Flight charts for PC"
 authors = ["uraXium"]
