@@ -1,11 +1,11 @@
-// OpenPlates — Copyright (C) 2026 uraXium
+// openCharts — Copyright (C) 2026 uraXium
 // SPDX-License-Identifier: AGPL-3.0-only
 
 //! Checks GitHub for a newer release and installs it.
 //!
-//! * Installed copy (has `uninstall.exe` next to it): downloads `OpenPlates-Setup.exe`
+//! * Installed copy (has `uninstall.exe` next to it): downloads `openCharts-Setup.exe`
 //!   and runs it silently; the installer replaces the app and starts it again.
-//! * Portable copy: downloads `OpenPlates.exe`, swaps it in place of the running exe
+//! * Portable copy: downloads `openCharts.exe`, swaps it in place of the running exe
 //!   (Windows allows renaming a running exe) and restarts.
 
 use std::io::Read;
@@ -13,8 +13,8 @@ use std::path::PathBuf;
 use std::sync::mpsc::{channel, Receiver};
 use std::thread;
 
-pub const REPO: &str = "dev-uraXium/openplates";
-pub const RELEASES_URL: &str = "https://github.com/dev-uraXium/openplates/releases/latest";
+pub const REPO: &str = "dev-uraXium/opencharts";
+pub const RELEASES_URL: &str = "https://github.com/dev-uraXium/opencharts/releases/latest";
 
 #[derive(Clone, Debug)]
 pub struct Release {
@@ -52,7 +52,7 @@ fn agent() -> ureq::Agent {
     ureq::AgentBuilder::new()
         .timeout(std::time::Duration::from_secs(30))
         .try_proxy_from_env(true)
-        .user_agent(concat!("OpenPlates/", env!("CARGO_PKG_VERSION")))
+        .user_agent(concat!("openCharts/", env!("CARGO_PKG_VERSION")))
         .build()
 }
 
@@ -74,8 +74,8 @@ fn fetch_latest() -> Result<Release, String> {
         version: v["tag_name"].as_str().unwrap_or("").trim_start_matches('v').to_string(),
         notes: v["body"].as_str().unwrap_or("").to_string(),
         page: v["html_url"].as_str().unwrap_or(RELEASES_URL).to_string(),
-        exe_url: find("OpenPlates.exe"),
-        setup_url: find("OpenPlates-Setup.exe"),
+        exe_url: find("openCharts.exe").or_else(|| find("OpenPlates.exe")),
+        setup_url: find("openCharts-Setup.exe").or_else(|| find("OpenPlates-Setup.exe")),
     })
 }
 
@@ -136,9 +136,9 @@ pub fn install(rel: Release, ctx: eframe::egui::Context) -> Receiver<Msg> {
             let exe = exe_path()?;
             if is_installed() {
                 if let Some(url) = &rel.setup_url {
-                    let setup = std::env::temp_dir().join("OpenPlates-Setup.exe");
+                    let setup = std::env::temp_dir().join("openCharts-Setup.exe");
                     download(url, &setup, &tx, &ctx)?;
-                    // silent install; the installer restarts OpenPlates when done
+                    // silent install; the installer restarts openCharts when done
                     std::process::Command::new(&setup)
                         .arg("/S")
                         .arg("/RELAUNCH")
@@ -147,7 +147,7 @@ pub fn install(rel: Release, ctx: eframe::egui::Context) -> Receiver<Msg> {
                     return Ok(());
                 }
             }
-            let url = rel.exe_url.clone().ok_or("this release has no OpenPlates.exe")?;
+            let url = rel.exe_url.clone().ok_or("this release has no openCharts.exe")?;
             let new = exe.with_extension("new.exe");
             download(&url, &new, &tx, &ctx)?;
             let old = exe.with_extension("old.exe");

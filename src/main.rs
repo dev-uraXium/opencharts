@@ -1,4 +1,4 @@
-// OpenPlates for PC — Copyright (C) 2026 uraXium
+// openCharts for PC — Copyright (C) 2026 uraXium
 // SPDX-License-Identifier: AGPL-3.0-only
 #![cfg_attr(windows, windows_subsystem = "windows")]
 
@@ -76,7 +76,7 @@ impl TapSort for Vec<ChartRef> {
 
 static LOGO_SVG: &[u8] = include_bytes!("../assets/logo.svg");
 
-/// Renders the OpenPlates logo to straight RGBA at `size`×`size`.
+/// Renders the openCharts logo to straight RGBA at `size`×`size`.
 fn logo_rgba(size: u32) -> Vec<u8> {
     use resvg::{tiny_skia, usvg};
     let tree = usvg::Tree::from_data(LOGO_SVG, &usvg::Options::default()).expect("logo");
@@ -229,7 +229,7 @@ impl App {
 
     fn export(&mut self) {
         let Some(id) = self.chart.clone() else { return };
-        let name = format!("openplates-{id}.png");
+        let name = format!("opencharts-{id}.png");
         if let Some(path) = rfd::FileDialog::new()
             .set_title("Export chart as PNG")
             .set_file_name(name)
@@ -273,7 +273,7 @@ impl App {
             .show(ui, |ui| {
                 ui.horizontal(|ui| match self.upd.clone() {
                     UpdState::Available(r) => {
-                        ui.label(RichText::new(format!("OpenPlates {} is available", r.version)).strong().color(Color32::WHITE));
+                        ui.label(RichText::new(format!("openCharts {} is available", r.version)).strong().color(Color32::WHITE));
                         ui.label(RichText::new(format!("(you have {})", env!("CARGO_PKG_VERSION"))).color(Color32::from_gray(200)));
                         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                             if ui.button("Later").clicked() {
@@ -289,7 +289,7 @@ impl App {
                         });
                     }
                     UpdState::Downloading(r, p) => {
-                        ui.label(RichText::new(format!("Downloading OpenPlates {}…", r.version)).strong().color(Color32::WHITE));
+                        ui.label(RichText::new(format!("Downloading openCharts {}…", r.version)).strong().color(Color32::WHITE));
                         ui.add(egui::ProgressBar::new(p).desired_width(260.0).show_percentage());
                         ui.label(RichText::new("The app restarts when it's done").color(Color32::from_gray(200)));
                     }
@@ -316,7 +316,7 @@ impl App {
             ui.add(egui::Image::new(&self.logo).fit_to_exact_size(Vec2::splat(30.0)));
             ui.vertical(|ui| {
                 ui.spacing_mut().item_spacing.y = 0.0;
-                ui.label(RichText::new("OpenPlates").size(19.0).strong());
+                ui.label(RichText::new("openCharts").size(19.0).strong());
                 ui.label(RichText::new("for Project Flight").size(10.5).color(ACCENT));
             });
         });
@@ -334,7 +334,7 @@ impl App {
         ui.add_space(4.0);
         ui.separator();
 
-        let q = self.search.trim().to_uppercase();
+        let q = norm(&self.search);
         let mut click_airport: Option<String> = None;
         let mut click_area: Option<String> = None;
         let mut click_proc: Option<(String, String, Tab)> = None;
@@ -343,7 +343,7 @@ impl App {
             if !q.is_empty() {
                 let mut any = false;
                 for a in &self.bundle.meta.airports {
-                    if a.icao.contains(&q) || a.name.to_uppercase().contains(&q) {
+                    if norm(&a.icao).contains(&q) || norm(&a.name).contains(&q) {
                         any = true;
                         if ui
                             .selectable_label(
@@ -363,7 +363,8 @@ impl App {
                     .filter(|c| {
                         (c.kind == "SID" || c.kind == "STAR")
                             && c.label != "All"
-                            && c.label.to_uppercase().contains(&q)
+                            && (norm(&c.label).contains(&q)
+                                || c.title.as_deref().map_or(false, |t| norm(t).contains(&q)))
                     })
                     .take(60)
                     .collect();
@@ -460,7 +461,7 @@ impl App {
                 .as_deref()
                 .and_then(|id| self.chart_ref(id))
                 .and_then(|c| c.title.clone())
-                .unwrap_or_else(|| "OpenPlates".into()),
+                .unwrap_or_else(|| "openCharts".into()),
         };
         ui.horizontal(|ui| {
             ui.label(RichText::new(title).size(17.0).strong());
@@ -737,7 +738,7 @@ impl App {
 
     fn about_window(&mut self, ctx: &egui::Context) {
         let mut open = self.about;
-        egui::Window::new("About OpenPlates")
+        egui::Window::new("About openCharts")
             .open(&mut open)
             .collapsible(false)
             .resizable(false)
@@ -747,8 +748,9 @@ impl App {
                 ui.horizontal(|ui| {
                     ui.add(egui::Image::new(&self.logo).fit_to_exact_size(Vec2::splat(56.0)));
                     ui.vertical(|ui| {
-                        ui.label(RichText::new("OpenPlates").size(20.0).strong());
+                        ui.label(RichText::new("openCharts").size(20.0).strong());
                         ui.label(format!("Version {}  ·  Charts for Project Flight", env!("CARGO_PKG_VERSION")));
+                        ui.label(RichText::new("A Coral Reef Studios product").small().color(ACCENT));
                     });
                 });
                 ui.add_space(6.0);
@@ -849,15 +851,15 @@ fn main() -> eframe::Result {
     };
     let opts = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
-            .with_title("OpenPlates")
-            .with_app_id("openplates")
+            .with_title("openCharts")
+            .with_app_id("opencharts")
             .with_icon(Arc::new(egui::IconData { rgba: logo_rgba(256), width: 256, height: 256 }))
             .with_inner_size([1360.0, 860.0])
             .with_min_inner_size([820.0, 560.0]),
         ..Default::default()
     };
     eframe::run_native(
-        "OpenPlates",
+        "openCharts",
         opts,
         Box::new(move |cc| Ok(Box::new(App::new(cc, bundle)))),
     )
@@ -867,16 +869,21 @@ fn main() -> eframe::Result {
 fn show_error(msg: String) -> eframe::Result {
     let opts = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
-            .with_title("OpenPlates")
+            .with_title("openCharts")
             .with_inner_size([520.0, 220.0]),
         ..Default::default()
     };
-    eframe::run_ui_native("OpenPlates", opts, move |ui, _| {
+    eframe::run_ui_native("openCharts", opts, move |ui, _| {
         egui::CentralPanel::default_margins().show(ui, |ui| {
             ui.add_space(8.0);
-            ui.label(RichText::new("OpenPlates can't load its charts").size(17.0).strong());
+            ui.label(RichText::new("openCharts can't load its charts").size(17.0).strong());
             ui.add_space(8.0);
             ui.label(&msg);
         });
     })
+}
+
+/// Uppercases and drops spaces/punctuation so "bogna1x", "BOGNA 1X" and "bogna-1x" all match.
+fn norm(s: &str) -> String {
+    s.chars().filter(|c| c.is_alphanumeric()).flat_map(|c| c.to_uppercase()).collect()
 }

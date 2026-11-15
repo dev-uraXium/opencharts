@@ -1,13 +1,13 @@
-OpenPlates — Copyright (C) 2026 uraXium
+openCharts — Copyright (C) 2026 uraXium
 
-The OpenPlates program is free software, licensed under the GNU Affero General
-Public License v3.0 (see https://github.com/dev-uraXium/openplates).
+The openCharts program is free software, licensed under the GNU Affero General
+Public License v3.0 (see https://github.com/dev-uraXium/opencharts).
 
-The charts included with OpenPlates are (C) 2026 uraXium, all rights reserved.
+The charts included with openCharts are (C) 2026 uraXium, all rights reserved.
 You may use them and share unmodified exported images. Modifying or
 redistributing the charts requires prior permission from uraXium.
 
-OpenPlates is an unofficial fan project for the Roblox game Project Flight and is
+openCharts is an unofficial fan project for the Roblox game Project Flight and is
 not affiliated with or endorsed by Project Flight or Roblox.
 
 FOR SIMULATION USE ONLY. NEVER USE THESE CHARTS FOR REAL-WORLD NAVIGATION.

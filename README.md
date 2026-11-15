@@ -1,12 +1,14 @@
-<p align="center"><img src="docs/img/logo.svg" width="112" alt="OpenPlates logo"></p>
+<p align="center"><img src="docs/img/logo.svg" width="112" alt="openCharts logo"></p>
 
-<h1 align="center">OpenPlates</h1>
+<h1 align="center">openCharts</h1>
+
+<p align="center"><em>A <a href="https://github.com/dev-uraXium">Coral Reef Studios</a> product · formerly OpenPlates</em></p>
 
 **Real-world-style aviation charts for [Project Flight](https://www.roblox.com/) (Roblox), in a fast desktop app.**
 
 Area charts, aerodrome charts, SIDs and STARs for every Project Flight airport, drawn in ICAO AIP style: real-world procedures and taxiway names, fitted to the actual Project Flight map.
 
-![OpenPlates area chart](docs/img/area.png)
+![openCharts area chart](docs/img/area.png)
 
 > ⚠️ Unofficial. Not affiliated with Project Flight or Roblox. For simulation only: **never use these charts for real-world navigation.**
 
@@ -14,14 +16,14 @@ Area charts, aerodrome charts, SIDs and STARs for every Project Flight airport, 
 
 ## Download
 
-1. Go to **[Releases](https://github.com/dev-uraXium/openplates/releases/latest)**.
-2. Download **`OpenPlates-Setup.exe`** (recommended) and run it. No admin rights needed.
-   It adds OpenPlates to the Start menu and desktop, and you can uninstall it from *Settings → Apps*.
-   Prefer no install? Download `OpenPlates.exe` instead and just double-click it.
+1. Go to **[Releases](https://github.com/dev-uraXium/opencharts/releases/latest)**.
+2. Download **`openCharts-Setup.exe`** (recommended) and run it. No admin rights needed.
+   It adds openCharts to the Start menu and desktop, and you can uninstall it from *Settings → Apps*.
+   Prefer no install? Download `openCharts.exe` instead and just double-click it.
 
 Windows may show a blue *"Windows protected your PC"* box the first time, because the app isn't code-signed. Click **More info → Run anyway**.
 
-**Updates:** OpenPlates (1.4.0 and later) checks GitHub when it starts. When a new version is out, a banner appears: click **Update now** and it downloads, installs and restarts by itself. You can also use **About → Check for updates**. Versions before 1.4.0 can't update themselves: download the latest release once and you're set.
+**Updates:** openCharts (1.4.0 and later) checks GitHub when it starts. When a new version is out, a banner appears: click **Update now** and it downloads, installs and restarts by itself. You can also use **About → Check for updates**. Versions before 1.4.0 can't update themselves: download the latest release once and you're set.
 
 Requirements: Windows 10 or 11 (64-bit) with OpenGL 2.0+ (any GPU from the last ~12 years).
 
@@ -86,8 +88,8 @@ rustup target add x86_64-pc-windows-gnu
 cargo build --release --target x86_64-pc-windows-gnu
 
 # Windows installer (needs NSIS / makensis)
-cp target/x86_64-pc-windows-gnu/release/openplates.exe target/x86_64-pc-windows-gnu/release/OpenPlates.exe
-makensis -DVERSION=1.4.0 installer/openplates.nsi   # -> target/OpenPlates-Setup.exe
+cp target/x86_64-pc-windows-gnu/release/opencharts.exe target/x86_64-pc-windows-gnu/release/openCharts.exe
+makensis -DVERSION=1.4.0 installer/opencharts.nsi   # -> target/openCharts-Setup.exe
 ```
 
 ### About the chart bundle
@@ -109,7 +111,7 @@ src/main.rs     UI: sidebar, tabs, procedure chips, chart viewer, info page, abo
 src/render.rs   background thread: decrypt → parse SVG → rasterise; PNG export
 src/bundle.rs   reads the encrypted bundle compiled into the binary
 src/update.rs   checks GitHub for new releases and installs them
-installer/      NSIS script for OpenPlates-Setup.exe
+installer/      NSIS script for openCharts-Setup.exe
 build.rs        copies private/ into the build, or a placeholder if it's missing
 pack.py         builds private/charts.bin + private/key.rs from export/
 assets/         Liberation Sans fonts (SIL OFL 1.1)
@@ -124,9 +126,9 @@ Wrong chart? Open an issue with the airport, chart name and what's off (a screen
 ## License
 
 - **Source code** (everything in this repository except `assets/` fonts): [GNU AGPL-3.0](LICENSE). Any copy, fork or modified version, including one offered as an online service, must stay open source under the AGPL with full source available, and keep the copyright notices. See [NOTICE](NOTICE).
-- **Name:** "OpenPlates" may not be used for modified versions without permission.
+- **Name:** "openCharts" may not be used for modified versions without permission.
 - **Charts** (the chart bundle shipped in the official release, and images exported from it): © 2026 uraXium, all rights reserved. You may use them and share unmodified exports; modifying or redistributing them requires prior permission from uraXium.
 - **Fonts:** Liberation Sans, [SIL Open Font License 1.1](assets/OFL.txt).
 - **Data credits:** waypoints from PFTracker; some ground layouts © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors (ODbL 1.0); some taxiway designators from the X-Plane Scenery Gateway. Aerodrome pavement is traced from the Project Flight map.
 
-Project Flight and Roblox are trademarks of their respective owners. OpenPlates is a fan project and is not endorsed by them.
+Project Flight and Roblox are trademarks of their respective owners. openCharts is a fan project and is not endorsed by them.

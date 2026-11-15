@@ -1,4 +1,4 @@
-// OpenPlates — Copyright (C) 2026 uraXium
+// openCharts — Copyright (C) 2026 uraXium
 // SPDX-License-Identifier: AGPL-3.0-only
 
 //! Copies the private chart bundle + key into OUT_DIR.
@@ -10,7 +10,7 @@ use std::{env, fs, path::PathBuf};
 fn main() {
     // Windows: embed the app icon and version info into the .exe
     println!("cargo:rerun-if-changed=assets/app.rc");
-    println!("cargo:rerun-if-changed=assets/openplates.ico");
+    println!("cargo:rerun-if-changed=assets/opencharts.ico");
     if env::var("CARGO_CFG_TARGET_OS").as_deref() == Ok("windows") {
         embed_resource::compile("assets/app.rc", embed_resource::NONE).manifest_optional().unwrap();
     }

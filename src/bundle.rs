@@ -1,4 +1,4 @@
-// OpenPlates — Copyright (C) 2026 uraXium
+// openCharts — Copyright (C) 2026 uraXium
 // SPDX-License-Identifier: AGPL-3.0-only
 
 //! Reads the encrypted chart bundle compiled into the executable.
@@ -124,7 +124,7 @@ fn open_entry(entry: &[u8]) -> Result<Vec<u8>, String> {
 impl Bundle {
     pub fn load() -> Result<Self, String> {
         if BLOB.starts_with(b"OPB0") {
-            return Err("This build doesn't include the chart bundle.\n\nDownload the official OpenPlates release from GitHub, \nor put your own bundle in private/ and rebuild (see README).".into());
+            return Err("This build doesn't include the chart bundle.\n\nDownload the official openCharts release from GitHub, \nor put your own bundle in private/ and rebuild (see README).".into());
         }
         if BLOB.len() < 8 || &BLOB[..4] != b"OPB1" {
             return Err("chart bundle missing or damaged".into());

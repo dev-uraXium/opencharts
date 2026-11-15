@@ -1,4 +1,4 @@
-1 ICON "openplates.ico"
+1 ICON "opencharts.ico"
 
 1 VERSIONINFO
 FILEVERSION 1,4,0,0
@@ -11,12 +11,12 @@ BEGIN
     BLOCK "040904B0"
     BEGIN
       VALUE "CompanyName", "uraXium"
-      VALUE "FileDescription", "OpenPlates - charts for Project Flight"
+      VALUE "FileDescription", "openCharts - charts for Project Flight"
       VALUE "FileVersion", "1.4.0"
-      VALUE "InternalName", "OpenPlates"
+      VALUE "InternalName", "openCharts"
       VALUE "LegalCopyright", "Copyright (C) 2026 uraXium"
-      VALUE "OriginalFilename", "OpenPlates.exe"
-      VALUE "ProductName", "OpenPlates"
+      VALUE "OriginalFilename", "openCharts.exe"
+      VALUE "ProductName", "openCharts"
       VALUE "ProductVersion", "1.4.0"
     END
   END

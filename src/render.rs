@@ -1,4 +1,4 @@
-// OpenPlates — Copyright (C) 2026 uraXium
+// openCharts — Copyright (C) 2026 uraXium
 // SPDX-License-Identifier: AGPL-3.0-only
 
 //! Background renderer: decrypts + parses + rasterises charts off the UI thread.

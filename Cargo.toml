@@ -1,8 +1,8 @@
 [package]
-name = "openplates"
-version = "1.4.0"
+name = "opencharts"
+version = "1.5.0"
 edition = "2021"
-description = "OpenPlates - Project Flight charts for PC"
+description = "openCharts - Project Flight charts for PC"
 authors = ["uraXium"]
 license = "AGPL-3.0-only"
 

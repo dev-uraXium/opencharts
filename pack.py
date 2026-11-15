@@ -1,5 +1,5 @@
 import json,os,zlib,struct,secrets
-# OpenPlates — Copyright (C) 2026 uraXium
+# openCharts — Copyright (C) 2026 uraXium
 # SPDX-License-Identifier: AGPL-3.0-only
 from cryptography.hazmat.primitives.ciphers import Cipher,algorithms
 import os
