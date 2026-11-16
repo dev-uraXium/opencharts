@@ -2,7 +2,7 @@
 
 <h1 align="center">openCharts</h1>
 
-<p align="center"><em>A <a href="[https://github.com/dev-uraXium](https://coral-reef-studios.vercel.app/)">Coral Reef Studios</a> product · formerly OpenPlates · <a href="https://discord.gg/8SpHYeVhN9">Discord</a></em></p>
+<p align="center"><em>A <a href="https://coral-reef-studios.vercel.app/">Coral Reef Studios</a> product · formerly OpenPlates · <a href="https://discord.gg/8SpHYeVhN9">Discord</a></em></p>
 
 **Real-world-style aviation charts for [Project Flight](https://www.roblox.com/games/6349094071/Project-Flight-Alpha) (Roblox), in a fast desktop app.**
 
