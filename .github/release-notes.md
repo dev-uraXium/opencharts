@@ -1,12 +1,13 @@
-**OpenPlates is now openCharts**, a Coral Reef Studios product. Same app, same logo, new name.
+### New: draw on charts
+Click **Draw** (or press **D**) to mark up any chart: plan a route, circle a holding fix, highlight a taxi route.
 
-### Changes
-- Renamed to openCharts. Installing this version replaces OpenPlates automatically (old shortcuts and files are removed).
-- Search ignores spaces, dashes and capitals: `bogna1x`, `BOGNA 1X` and `bogna-1x` all find the same procedure. Chart titles are searchable too.
-- **MDPC (Punta Cana):** long south taxiway corrected to A; D is only the curve.
-- **MDST (Santiago):** removed the non-existent taxiway R; A1–A4 are now shown as stands.
-- **MDCR (Cabo Rojo):** added taxiway A.
+- **Pen** (P), **Highlighter** (H) and **Eraser** (E), 6 colours, 3 sizes
+- Drawings stick to the chart when you pan and zoom
+- Each chart keeps its own drawings, saved automatically and still there next time you open the app
+- **Undo / Redo** (Ctrl+Z / Ctrl+Y) and **Clear chart**
+- In draw mode: left-drag draws, right-drag pans, scroll zooms, **Esc** when done
 
-### Download
-- `openCharts-Setup.exe` (recommended) or `openCharts.exe` (portable).
-- `OpenPlates-Setup.exe` / `OpenPlates.exe` are identical copies so OpenPlates 1.4 can update itself.
+Export PNG still saves the clean chart, without drawings.
+
+### Fixes
+- Area chart headers now say openCharts instead of OpenPlates.

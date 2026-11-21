@@ -3,6 +3,7 @@
 #![cfg_attr(windows, windows_subsystem = "windows")]
 
 mod bundle;
+mod draw;
 mod render;
 mod update;
 
@@ -12,6 +13,7 @@ use std::sync::Arc;
 use eframe::egui::{self, Color32, Pos2, Rect, RichText, Sense, Vec2};
 
 use bundle::{Airport, Bundle, ChartRef};
+use draw::{Draw, Tool};
 use render::{Done, Job, Renderer};
 
 const ACCENT: Color32 = Color32::from_rgb(0x2f, 0x7d, 0xd1);
@@ -50,6 +52,7 @@ struct App {
     upd_rx: Option<std::sync::mpsc::Receiver<update::Msg>>,
     upd: UpdState,
     upd_manual: bool,
+    draw: Draw,
 }
 
 #[derive(Clone)]
@@ -126,6 +129,7 @@ impl App {
             upd_rx: None,
             upd: UpdState::Checking,
             upd_manual: false,
+            draw: Draw::load(),
         };
         update::cleanup();
         a.upd_rx = Some(update::check(cc.egui_ctx.clone()));
@@ -469,9 +473,18 @@ impl App {
                 if ui.button("About").clicked() {
                     self.about = true;
                 }
+                let viewing = self.chart.is_some() && !(self.tab == Tab::Info && self.airport.is_some());
+                if ui
+                    .add_enabled(viewing, egui::Button::new("Draw").selected(self.draw.on))
+                    .on_hover_text("Draw on the chart (D)")
+                    .clicked()
+                {
+                    self.draw.on = !self.draw.on;
+                }
                 let can_export = self.chart.is_some() && self.tab != Tab::Info || self.airport.is_none();
                 if ui
                     .add_enabled(can_export && self.chart.is_some(), egui::Button::new("Export PNG"))
+                    .on_hover_text("Saves the chart without your drawings")
                     .clicked()
                 {
                     self.export();
@@ -489,6 +502,12 @@ impl App {
                 ui.label(RichText::new(format!("{:.0}%", self.zoom * 100.0)).weak());
             });
         });
+
+        let viewing = self.chart.is_some() && !(self.tab == Tab::Info && self.airport.is_some());
+        if self.draw.on && viewing {
+            ui.add_space(4.0);
+            self.draw_toolbar(ui);
+        }
 
         let Some(icao) = self.airport.clone() else { return };
         ui.add_space(4.0);
@@ -628,6 +647,98 @@ impl App {
     }
 
     // ───────────────────────────── chart view ─────────────────────────────
+    fn shortcuts(&mut self, ctx: &egui::Context) {
+        if ctx.egui_wants_keyboard_input() {
+            return; // typing in the search box
+        }
+        let viewing = self.chart.is_some() && !(self.tab == Tab::Info && self.airport.is_some());
+        let id = self.chart.clone().unwrap_or_default();
+        ctx.input_mut(|i| {
+            use egui::{Key, KeyboardShortcut, Modifiers};
+            if viewing && i.consume_key(Modifiers::NONE, Key::D) {
+                self.draw.on = !self.draw.on;
+            }
+            if !self.draw.on {
+                return;
+            }
+            if i.consume_key(Modifiers::NONE, Key::Escape) {
+                self.draw.on = false;
+            }
+            if i.consume_key(Modifiers::NONE, Key::P) {
+                self.draw.tool = Tool::Pen;
+            }
+            if i.consume_key(Modifiers::NONE, Key::H) {
+                self.draw.tool = Tool::Highlighter;
+            }
+            if i.consume_key(Modifiers::NONE, Key::E) {
+                self.draw.tool = Tool::Eraser;
+            }
+            if i.consume_shortcut(&KeyboardShortcut::new(Modifiers::COMMAND | Modifiers::SHIFT, Key::Z))
+                || i.consume_shortcut(&KeyboardShortcut::new(Modifiers::COMMAND, Key::Y))
+            {
+                self.draw.redo(&id);
+            } else if i.consume_shortcut(&KeyboardShortcut::new(Modifiers::COMMAND, Key::Z)) {
+                self.draw.undo(&id);
+            }
+        });
+    }
+
+    fn draw_toolbar(&mut self, ui: &mut egui::Ui) {
+        let Some(id) = self.chart.clone() else { return };
+        ui.horizontal(|ui| {
+            let d = &mut self.draw;
+            for (tool, label, tip) in [
+                (Tool::Pen, "Pen", "Pen (P)"),
+                (Tool::Highlighter, "Highlighter", "Highlighter (H)"),
+                (Tool::Eraser, "Eraser", "Eraser: drag over a line to remove it (E)"),
+            ] {
+                if ui.selectable_label(d.tool == tool, label).on_hover_text(tip).clicked() {
+                    d.tool = tool;
+                }
+            }
+            ui.separator();
+            for (i, (name, [r, g, b])) in draw::COLORS.iter().enumerate() {
+                let (rect, resp) = ui.allocate_exact_size(Vec2::splat(20.0), Sense::click());
+                let c = Color32::from_rgb(*r, *g, *b);
+                ui.painter().circle_filled(rect.center(), 8.0, c);
+                ui.painter().circle_stroke(rect.center(), 8.0, egui::Stroke::new(1.0, Color32::from_gray(150)));
+                if d.color == i {
+                    ui.painter().circle_stroke(rect.center(), 10.0, egui::Stroke::new(2.0, ui.visuals().strong_text_color()));
+                }
+                if resp.on_hover_text(*name).clicked() {
+                    d.color = i;
+                    if d.tool == Tool::Eraser {
+                        d.tool = Tool::Pen;
+                    }
+                }
+            }
+            ui.separator();
+            for (i, (label, _)) in draw::SIZES.iter().enumerate() {
+                if ui.selectable_label(d.size == i, *label).on_hover_text("Line size").clicked() {
+                    d.size = i;
+                }
+            }
+            ui.separator();
+            if ui.add_enabled(d.can_undo(&id), egui::Button::new("Undo")).on_hover_text("Ctrl+Z").clicked() {
+                d.undo(&id);
+            }
+            if ui.add_enabled(d.can_redo(&id), egui::Button::new("Redo")).on_hover_text("Ctrl+Y").clicked() {
+                d.redo(&id);
+            }
+            if ui
+                .add_enabled(d.has_marks(&id), egui::Button::new("Clear chart"))
+                .on_hover_text("Remove all drawings on this chart (you can undo)")
+                .clicked()
+            {
+                d.clear(&id);
+            }
+            ui.separator();
+            if ui.button("Done").on_hover_text("Leave draw mode (Esc)").clicked() {
+                d.on = false;
+            }
+        });
+    }
+
     fn viewer(&mut self, ui: &mut egui::Ui) {
         let Some(id) = self.chart.clone() else { return };
         let rect = ui.available_rect_before_wrap();
@@ -667,10 +778,15 @@ impl App {
                     self.zoom = new_zoom;
                 }
             }
-            if resp.dragged() {
+            let pan_drag = if self.draw.on {
+                resp.dragged_by(egui::PointerButton::Secondary) || resp.dragged_by(egui::PointerButton::Middle)
+            } else {
+                resp.dragged()
+            };
+            if pan_drag {
                 self.pan += resp.drag_delta();
             }
-            if resp.double_clicked() {
+            if resp.double_clicked() && !self.draw.on {
                 self.zoom = 1.0;
                 self.pan = Vec2::ZERO;
             }
@@ -692,9 +808,13 @@ impl App {
                     Rect::from_min_max(Pos2::ZERO, Pos2::new(1.0, 1.0)),
                     Color32::WHITE,
                 );
+                self.draw.input(&id, &resp, img_rect);
+                self.draw.paint(&id, &painter, img_rect);
             }
-            if resp.dragged() {
+            if pan_drag {
                 ui.ctx().set_cursor_icon(egui::CursorIcon::Grabbing);
+            } else if self.draw.on {
+                self.draw.cursor(ui, &resp, img_rect, &painter);
             } else if resp.hovered() {
                 ui.ctx().set_cursor_icon(egui::CursorIcon::Grab);
             }
@@ -802,6 +922,7 @@ impl App {
 impl eframe::App for App {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
         let ctx = ui.ctx().clone();
+        self.shortcuts(&ctx);
         self.poll(&ctx);
         self.poll_update(&ctx);
         if matches!(self.upd, UpdState::Available(_) | UpdState::Downloading(..)) || (self.upd_manual && matches!(self.upd, UpdState::Error(_))) {
@@ -819,7 +940,12 @@ impl eframe::App for App {
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                     ui.label(RichText::new(&self.status).small());
                     if self.tab != Tab::Info || self.airport.is_none() {
-                        ui.label(RichText::new("Drag to pan · scroll to zoom · double-click to fit").small().weak());
+                        let hint = if self.draw.on {
+                            "Left-drag to draw · right-drag to pan · scroll to zoom · Ctrl+Z to undo · Esc when done"
+                        } else {
+                            "Drag to pan · scroll to zoom · double-click to fit · D to draw"
+                        };
+                        ui.label(RichText::new(hint).small().weak());
                     }
                 });
             });

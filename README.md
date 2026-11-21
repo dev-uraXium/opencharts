@@ -63,6 +63,20 @@ Charts redraw sharper as you zoom in (up to 800%).
 
 ![Zoomed in](docs/img/zoom.png)
 
+### Drawing on charts
+Click **Draw** (or press **D**) to mark up the chart you're looking at.
+
+| Action | How |
+|---|---|
+| Pen / Highlighter / Eraser | Toolbar, or **P** / **H** / **E** |
+| Colour and size | 6 colours, S / M / L |
+| Draw | Left-drag (click for a dot) |
+| Pan while drawing | Right-drag (scroll still zooms) |
+| Undo / Redo | Ctrl+Z / Ctrl+Y |
+| Leave draw mode | **Done** or **Esc** |
+
+Drawings stay pinned to the chart when you zoom and pan, are kept per chart, and are saved automatically (`%APPDATA%\openCharts\drawings.json` on Windows). **Clear chart** removes them (and can be undone). Exported PNGs never include drawings.
+
 ### Exporting
 **Export PNG** saves the chart you're looking at as a high-resolution image (3×), ready to print or put on a second screen.
 You may share exported images as-is; you may not edit them or pass them off as your own (see [License](#license)).
