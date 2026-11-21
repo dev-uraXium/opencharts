@@ -13,8 +13,8 @@ use std::path::PathBuf;
 use std::sync::mpsc::{channel, Receiver};
 use std::thread;
 
-pub const REPO: &str = "dev-uraXium/opencharts";
-pub const RELEASES_URL: &str = "https://github.com/dev-uraXium/opencharts/releases/latest";
+pub const REPO: &str = "Coral-Reef-Studios/opencharts";
+pub const RELEASES_URL: &str = "https://github.com/Coral-Reef-Studios/opencharts/releases/latest";
 
 #[derive(Clone, Debug)]
 pub struct Release {

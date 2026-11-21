@@ -1,7 +1,7 @@
 openCharts — Copyright (C) 2026 uraXium
 
 The openCharts program is free software, licensed under the GNU Affero General
-Public License v3.0 (see https://github.com/dev-uraXium/opencharts).
+Public License v3.0 (see https://github.com/Coral-Reef-Studios/opencharts).
 
 The charts included with openCharts are (C) 2026 uraXium, all rights reserved.
 You may use them and share unmodified exported images. Modifying or

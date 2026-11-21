@@ -82,7 +82,7 @@ Section "openCharts" SecMain
   WriteRegStr HKCU "${UNKEY}" "Publisher" "${PUB}"
   WriteRegStr HKCU "${UNKEY}" "DisplayIcon" "$INSTDIR\opencharts.ico"
   WriteRegStr HKCU "${UNKEY}" "InstallLocation" "$INSTDIR"
-  WriteRegStr HKCU "${UNKEY}" "URLInfoAbout" "https://github.com/dev-uraXium/opencharts"
+  WriteRegStr HKCU "${UNKEY}" "URLInfoAbout" "https://github.com/Coral-Reef-Studios/opencharts"
   WriteRegStr HKCU "${UNKEY}" "UninstallString" '"$INSTDIR\uninstall.exe"'
   WriteRegStr HKCU "${UNKEY}" "QuietUninstallString" '"$INSTDIR\uninstall.exe" /S'
   WriteRegDWORD HKCU "${UNKEY}" "NoModify" 1

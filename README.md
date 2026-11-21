@@ -16,7 +16,7 @@ Area charts, aerodrome charts, SIDs and STARs for every Project Flight airport, 
 
 ## Download
 
-1. Go to **[Releases](https://github.com/dev-uraXium/opencharts/releases/latest)**.
+1. Go to **[Releases](https://github.com/Coral-Reef-Studios/opencharts/releases/latest)**.
 2. Download **`openCharts-Setup.exe`** (recommended) and run it. No admin rights needed.
    It adds openCharts to the Start menu and desktop, and you can uninstall it from *Settings → Apps*.
    Prefer no install? Download `openCharts.exe` instead and just double-click it.
